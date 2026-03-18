@@ -23,7 +23,7 @@ const Navbar = () => {
   const navLinks = [
     { name: 'Ana Sayfa', href: '/' },
     { name: 'Hakkımda', href: '/hakkimda' },
-    { name: 'Vizyonum', href: '/#vizyon' },
+    { name: 'Vizyonum', href: '/vizyonum' },
     { name: 'Hizmetler', href: '/#hizmetler', dropdown: true },
     { name: 'İletişim', href: '/#iletisim' },
   ];

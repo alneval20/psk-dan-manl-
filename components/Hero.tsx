@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { motion } from 'motion/react';
 import { useData } from '@/lib/data-context';
 import { ArrowRight } from 'lucide-react';
@@ -85,10 +86,12 @@ const Hero = () => {
             className="relative"
           >
             <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-[4/5]">
-              <img
+              <Image
                 src={settings?.aboutImage || "https://picsum.photos/seed/psychology/800/1000"}
                 alt="Meleknur Budak"
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
+                referrerPolicy="no-referrer"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent" />
             </div>

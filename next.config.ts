@@ -17,6 +17,12 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**', // This allows any path under the hostname
       },
+      {
+        protocol: 'https',
+        hostname: 'ais-pre-gmurdtqxe66t7nq3uxit7n-495551996573.europe-west2.run.app',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
   output: 'standalone',

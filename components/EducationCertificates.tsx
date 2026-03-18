@@ -1,8 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'motion/react';
 import { Award, BookOpen, CheckCircle2, FileText, X, ZoomIn } from 'lucide-react';
+import sertifika from '../sertik.jpeg';
 
 const EducationCertificates = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -99,12 +101,14 @@ const EducationCertificates = () => {
               <div className="bg-white p-4 rounded-[2rem] shadow-xl border border-slate-100 overflow-hidden">
                 <div className="relative aspect-[1.414/1] bg-slate-50 rounded-xl overflow-hidden border border-slate-200">
                   {/* Certificate Mockup / Image Placeholder */}
-                  <img 
-                    src="https://picsum.photos/seed/certificate/1200/850" 
+                  <Image 
+                    src={sertifika} 
                     alt="Temel Psikoloji Eğitimi Bitirme Sertifikası"
-                    className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700"
+                    fill
+                    className="object-contain group-hover:scale-105 transition-transform duration-700"
+                    referrerPolicy="no-referrer"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent flex flex-col justify-end p-8 text-white">
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-transparent flex flex-col justify-end p-8 text-white">
                     <p className="text-xs font-bold tracking-widest uppercase mb-2 opacity-80">Bitirme Sertifikası</p>
                     <h4 className="text-2xl font-serif font-bold mb-1">Temel Psikoloji Eğitimi</h4>
                     <p className="text-sm opacity-90">Meleknur Budak - TNC Group & Rehber Psikoloji</p>
@@ -180,10 +184,12 @@ const EducationCertificates = () => {
 
               <div className="p-2 sm:p-4">
                 <div className="relative aspect-[1.414/1] w-full bg-slate-100 rounded-2xl overflow-hidden shadow-inner border border-slate-200">
-                  <img 
-                    src="https://picsum.photos/seed/certificate/1600/1131" 
+                  <Image 
+                    src={sertifika} 
                     alt="Meleknur Budak Sertifika"
-                    className="w-full h-full object-contain"
+                    fill
+                    className="object-contain"
+                    referrerPolicy="no-referrer"
                   />
                 </div>
               </div>

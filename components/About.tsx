@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { motion } from 'motion/react';
 import { useData } from '@/lib/data-context';
 
@@ -48,10 +49,12 @@ const About = () => {
             className="order-1 lg:order-2 relative"
           >
             <div className="relative rounded-[2rem] overflow-hidden shadow-2xl aspect-square">
-              <img
+              <Image
                 src={settings?.aboutImage || "https://picsum.photos/seed/consultant/800/800"}
                 alt="Meleknur Budak"
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
+                referrerPolicy="no-referrer"
               />
             </div>
             {/* Decorative Elements */}
