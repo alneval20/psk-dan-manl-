@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { motion } from 'motion/react';
 import { useData } from '@/lib/data-context';
 import { ArrowRight } from 'lucide-react';
-import melekGorseli from '../public/melek.jpeg';
+import Danisan from '../public/danisan.jpeg';
 
 const Hero = () => {
   const { settings, t, language } = useData();
@@ -117,7 +117,7 @@ const Hero = () => {
 
             <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-video lg:aspect-[1.4/1]">
               <Image
-                src={settings?.aboutImage && settings.aboutImage.includes('http') ? settings.aboutImage : melekGorseli}
+                src={settings?.aboutImage && settings.aboutImage.includes('http') ? settings.aboutImage : Danisan}
                 alt="Huzurlu Terapi Alanı"
                 fill
                 className="object-cover"
