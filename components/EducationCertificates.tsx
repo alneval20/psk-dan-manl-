@@ -4,36 +4,38 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'motion/react';
 import { Award, BookOpen, CheckCircle2, FileText, X, ZoomIn } from 'lucide-react';
+import { useData } from '@/lib/data-context';
 import sertifika from '../sertik.jpeg';
 
 const EducationCertificates = () => {
+  const { t, language } = useData();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const educations = [
     {
-      title: "Bilişsel Davranışçı Terapi Eğitimi",
+      title: language === 'tr' ? "Bilişsel Davranışçı Terapi Eğitimi" : "Cognitive Behavioral Therapy Training",
       instructor: "Uzm. Psk. Gizem Çetin",
-      description: "Düşünce ve davranış kalıplarının analizi ve dönüşümü üzerine kapsamlı uzmanlık eğitimi."
+      description: language === 'tr' ? "Düşünce ve davranış kalıplarının analizi ve dönüşümü üzerine kapsamlı uzmanlık eğitimi." : "Comprehensive expertise training on the analysis and transformation of thought and behavior patterns."
     },
     {
-      title: "Temel Spor Psikolojisi",
+      title: language === 'tr' ? "Temel Spor Psikolojisi" : "Basic Sports Psychology",
       instructor: "Uzm. Spor Psk. Deren Yelmen",
-      description: "Sporcuların performans gelişimi ve mental hazırlık süreçlerine yönelik psikolojik destek yöntemleri."
+      description: language === 'tr' ? "Sporcuların performans gelişimi ve mental hazırlık süreçlerine yönelik psikolojik destek yöntemleri." : "Psychological support methods for athletes' performance development and mental preparation processes."
     },
     {
-      title: "Mindfulness Temelli Terapi",
+      title: language === 'tr' ? "Mindfulness Temelli Terapi" : "Mindfulness Based Therapy",
       instructor: "Uzm. Psk. Ezgi Vurkan",
-      description: "Bilinçli farkındalık tekniklerinin terapi süreçlerine entegrasyonu ve stres yönetimi."
+      description: language === 'tr' ? "Bilinçli farkındalık tekniklerinin terapi süreçlerine entegrasyonu ve stres yönetimi." : "Integration of mindfulness techniques into therapy processes and stress management."
     },
     {
-      title: "Temel Sanat Terapisi",
+      title: language === 'tr' ? "Temel Sanat Terapisi" : "Basic Art Therapy",
       instructor: "Uzm. Psk. Yasemin Erdemir",
-      description: "Sanatın iyileştirici gücünü kullanarak duygusal dışavurum ve iyileşme teknikleri."
+      description: language === 'tr' ? "Sanatın iyileştirici gücünü kullanarak duygusal dışavurum ve iyileşme teknikleri." : "Emotional expression and healing techniques using the healing power of art."
     },
     {
-      title: "Staj Eğitimleri",
+      title: language === 'tr' ? "Staj Eğitimleri" : "Internship Trainings",
       instructor: "Rehber Klinik & TNC Group",
-      description: "Klinik ortamda gözlem ve uygulama deneyimi kazandıran profesyonel staj programı."
+      description: language === 'tr' ? "Klinik ortamda gözlem ve uygulama deneyimi kazandıran profesyonel staj programı." : "Professional internship program providing observation and application experience in a clinical setting."
     }
   ];
 
@@ -49,9 +51,9 @@ const EducationCertificates = () => {
           >
             <Award className="w-8 h-8" />
           </motion.div>
-          <h2 className="text-4xl font-serif font-bold text-slate-900 mb-4">Eğitim ve Sertifikalar</h2>
+          <h2 className="text-4xl font-serif font-bold text-slate-900 mb-4">{t.education.title}</h2>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-            Mesleki gelişimimi sürekli kılmak adına aldığım temel eğitimler ve uzmanlık sertifikaları.
+            {t.education.subtitle}
           </p>
         </div>
 
@@ -76,7 +78,7 @@ const EducationCertificates = () => {
                       {edu.title}
                     </h3>
                     <p className="text-sm font-semibold text-pistachio-700 mb-2">
-                      Eğitmen: {edu.instructor}
+                      {t.education.instructor}: {edu.instructor}
                     </p>
                     <p className="text-slate-600 text-sm leading-relaxed">
                       {edu.description}
@@ -103,22 +105,22 @@ const EducationCertificates = () => {
                   {/* Certificate Mockup / Image Placeholder */}
                   <Image 
                     src={sertifika} 
-                    alt="Temel Psikoloji Eğitimi Bitirme Sertifikası"
+                    alt={t.education.certificateTitle}
                     fill
                     className="object-contain group-hover:scale-105 transition-transform duration-700"
                     referrerPolicy="no-referrer"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-transparent flex flex-col justify-end p-8 text-white">
-                    <p className="text-xs font-bold tracking-widest uppercase mb-2 opacity-80">Bitirme Sertifikası</p>
-                    <h4 className="text-2xl font-serif font-bold mb-1">Temel Psikoloji Eğitimi</h4>
-                    <p className="text-sm opacity-90">Meleknur Budak - TNC Group & Rehber Psikoloji</p>
+                    <p className="text-xs font-bold tracking-widest uppercase mb-2 opacity-80">{t.education.certificateTitle}</p>
+                    <h4 className="text-2xl font-serif font-bold mb-1">{language === 'tr' ? 'Temel Psikoloji Eğitimi' : 'Basic Psychology Training'}</h4>
+                    <p className="text-sm opacity-90">{t.education.certificateSubtitle}</p>
                   </div>
                   
                   {/* Overlay on Hover */}
                   <div className="absolute inset-0 bg-pistachio-600/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                     <div className="bg-white text-pistachio-600 px-6 py-3 rounded-full font-bold shadow-lg flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-transform">
                       <ZoomIn className="w-5 h-5" />
-                      Sertifikayı İncele
+                      {t.education.examineCertificate}
                     </div>
                   </div>
                 </div>
@@ -126,20 +128,20 @@ const EducationCertificates = () => {
                 <div className="mt-8 p-6 bg-pistachio-50 rounded-2xl border border-pistachio-100">
                   <div className="flex items-center gap-3 mb-4">
                     <BookOpen className="w-5 h-5 text-pistachio-600" />
-                    <h4 className="font-bold text-slate-900">Sertifika Detayları</h4>
+                    <h4 className="font-bold text-slate-900">{t.education.certificateDetails}</h4>
                   </div>
                   <ul className="space-y-3">
                     <li className="text-sm text-slate-600 flex items-center gap-2">
                       <div className="w-1.5 h-1.5 bg-pistachio-400 rounded-full" />
-                      <strong>Kurum:</strong> TNC Group & Rehber Psikoloji
+                      <strong>{t.education.institution}:</strong> TNC Group & Rehber Psikoloji
                     </li>
                     <li className="text-sm text-slate-600 flex items-center gap-2">
                       <div className="w-1.5 h-1.5 bg-pistachio-400 rounded-full" />
-                      <strong>Koordinatör:</strong> Uzm. Psk. Zekiye İrem Akıcı
+                      <strong>{t.education.coordinator}:</strong> Uzm. Psk. Zekiye İrem Akıcı
                     </li>
                     <li className="text-sm text-slate-600 flex items-center gap-2">
                       <div className="w-1.5 h-1.5 bg-pistachio-400 rounded-full" />
-                      <strong>Yönetim Kurulu Başkanı:</strong> Doğukan Tunca
+                      <strong>{t.education.chairman}:</strong> Doğukan Tunca
                     </li>
                   </ul>
                 </div>
@@ -197,14 +199,14 @@ const EducationCertificates = () => {
               <div className="p-6 sm:p-8 bg-beige-50 flex flex-col sm:flex-row items-center justify-between gap-6">
                 <div>
                   <h3 className="text-2xl font-serif font-bold text-slate-900 mb-1">Meleknur Budak</h3>
-                  <p className="text-pistachio-600 font-medium">Temel Psikoloji Eğitimi Bitirme Sertifikası</p>
+                  <p className="text-pistachio-600 font-medium">{language === 'tr' ? 'Temel Psikoloji Eğitimi Bitirme Sertifikası' : 'Basic Psychology Training Completion Certificate'}</p>
                 </div>
                 <button 
                   onClick={() => window.print()}
                   className="flex items-center gap-2 px-6 py-3 bg-white border border-beige-200 text-slate-700 rounded-xl hover:bg-pistachio-50 hover:border-pistachio-200 transition-all font-bold shadow-sm"
                 >
                   <FileText className="w-5 h-5" />
-                  Yazdır / İndir
+                  {t.education.printDownload}
                 </button>
               </div>
             </motion.div>

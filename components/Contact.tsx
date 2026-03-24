@@ -8,12 +8,12 @@ import { db } from '@/lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 const Contact = () => {
-  const { settings } = useData();
+  const { settings, t, language } = useData();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
-    service: 'Bireysel Danışmanlık',
+    service: t.common.defaultService,
     message: '',
     preferredDate: ''
   });
@@ -26,11 +26,10 @@ const Contact = () => {
     setStatus(null);
 
     try {
-      // Map "Bireysel Danışmanlık" to "Yetişkin Danışmanlığı" or similar if needed
-      // but I'll just use the form value
       const appointmentData = {
         ...formData,
-        status: 'Bekliyor',
+        status: t.common.defaultStatus,
+        language: language,
         createdAt: new Date().toISOString()
       };
 
@@ -47,18 +46,18 @@ const Contact = () => {
         console.error("Notification error:", err);
       }
 
-      setStatus({ type: 'success', message: 'Randevu talebiniz başarıyla alındı. En kısa sürede size dönüş yapacağız.' });
+      setStatus({ type: 'success', message: t.contact.successMessage });
       setFormData({
         name: '',
         email: '',
         phone: '',
-        service: 'Bireysel Danışmanlık',
+        service: t.common.defaultService,
         message: '',
         preferredDate: ''
       });
     } catch (error) {
       console.error("Form error:", error);
-      setStatus({ type: 'error', message: 'Bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.' });
+      setStatus({ type: 'error', message: t.contact.errorMessage });
     } finally {
       setIsSubmitting(false);
     }
@@ -73,19 +72,19 @@ const Contact = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-sm font-bold tracking-widest text-pistachio-600 uppercase mb-4">İletişim</h2>
+            <h2 className="text-sm font-bold tracking-widest text-pistachio-600 uppercase mb-4">{t.contact.badge}</h2>
             <h3 className="text-4xl font-serif font-bold text-slate-900 mb-8 leading-tight">
-              Yolculuğunuzda Size <span className="text-pistachio-500">Eşlik Etmek</span> İçin Buradayım
+              {t.contact.titleStart} <span className="text-pistachio-500">{t.contact.titleHighlight}</span> {t.contact.titleEnd}
             </h3>
             <p className="text-lg text-slate-600 mb-12 leading-relaxed">
-              Kendinizi keşfetme ve iyileşme sürecinizde, güvenli ve yargısız bir alan sunmak en büyük önceliğim. Sorularınız için veya randevu oluşturmak için dilediğiniz zaman bana ulaşabilirsiniz.
+              {t.contact.description}
             </p>
 
             <div className="space-y-8">
               {[
                 {
                   icon: <Mail className="w-6 h-6" />,
-                  label: "E-posta",
+                  label: t.contact.emailLabel,
                   value: settings?.email || "meleknurbudak4@gmail.com",
                   href: `mailto:${settings?.email || 'meleknurbudak4@gmail.com'}`,
                   bg: "bg-pistachio-50"
@@ -99,8 +98,8 @@ const Contact = () => {
                 },
                 {
                   icon: <MapPin className="w-6 h-6" />,
-                  label: "Konum",
-                  value: "Online & Yüz Yüze",
+                  label: t.contact.locationLabel,
+                  value: t.contact.locationValue,
                   bg: "bg-beige-100"
                 }
               ].map((item, i) => (
@@ -146,7 +145,7 @@ const Contact = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-2">Adınız Soyadınız</label>
+                  <label className="block text-sm font-bold text-slate-700 mb-2">{t.contact.formName}</label>
                   <input 
                     required
                     type="text" 
@@ -157,7 +156,7 @@ const Contact = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-2">E-posta Adresiniz</label>
+                  <label className="block text-sm font-bold text-slate-700 mb-2">{t.contact.formEmail}</label>
                   <input 
                     required
                     type="email" 
@@ -170,7 +169,7 @@ const Contact = () => {
               </div>
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-2">Telefon Numaranız</label>
+                  <label className="block text-sm font-bold text-slate-700 mb-2">{t.contact.formPhone}</label>
                   <input 
                     required
                     type="tel" 
@@ -181,37 +180,37 @@ const Contact = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-2">Tercih Edilen Hizmet</label>
+                  <label className="block text-sm font-bold text-slate-700 mb-2">{t.contact.formService}</label>
                   <select 
                     value={formData.service}
                     onChange={e => setFormData({...formData, service: e.target.value})}
                     className="w-full px-5 py-4 bg-beige-50/50 border border-beige-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pistachio-500/20 focus:border-pistachio-500 transition-all"
                   >
-                    <option value="Yetişkin Danışmanlığı">Yetişkin Danışmanlığı</option>
-                    <option value="Çocuk Danışmanlığı">Çocuk Danışmanlığı</option>
-                    <option value="Ergen Danışmanlığı">Ergen Danışmanlığı</option>
-                    <option value="Diğer">Diğer</option>
+                    <option value={language === 'tr' ? 'Yetişkin Danışmanlığı' : 'Adult Counseling'}>{language === 'tr' ? 'Yetişkin Danışmanlığı' : 'Adult Counseling'}</option>
+                    <option value={language === 'tr' ? 'Çocuk Danışmanlığı' : 'Child Counseling'}>{language === 'tr' ? 'Çocuk Danışmanlığı' : 'Child Counseling'}</option>
+                    <option value={language === 'tr' ? 'Ergen Danışmanlığı' : 'Adolescent Counseling'}>{language === 'tr' ? 'Ergen Danışmanlığı' : 'Adolescent Counseling'}</option>
+                    <option value={language === 'tr' ? 'Diğer' : 'Other'}>{language === 'tr' ? 'Diğer' : 'Other'}</option>
                   </select>
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-2">Tercih Edilen Tarih ve Saat</label>
+                <label className="block text-sm font-bold text-slate-700 mb-2">{t.contact.formDate}</label>
                 <input 
                   type="text" 
                   value={formData.preferredDate}
                   onChange={e => setFormData({...formData, preferredDate: e.target.value})}
                   className="w-full px-5 py-4 bg-beige-50/50 border border-beige-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pistachio-500/20 focus:border-pistachio-500 transition-all" 
-                  placeholder="Örn: Pazartesi öğleden sonra" 
+                  placeholder={t.contact.formDatePlaceholder} 
                 />
               </div>
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-2">Mesajınız</label>
+                <label className="block text-sm font-bold text-slate-700 mb-2">{t.contact.formMessage}</label>
                 <textarea 
                   rows={4} 
                   value={formData.message}
                   onChange={e => setFormData({...formData, message: e.target.value})}
                   className="w-full px-5 py-4 bg-beige-50/50 border border-beige-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pistachio-500/20 focus:border-pistachio-500 transition-all" 
-                  placeholder="Nasıl yardımcı olabilirim?"
+                  placeholder={t.contact.formMessagePlaceholder}
                 ></textarea>
               </div>
               <button 
@@ -219,7 +218,7 @@ const Contact = () => {
                 type="submit" 
                 className="w-full py-5 bg-pistachio-400 text-white font-bold rounded-xl hover:bg-pistachio-500 transition-all shadow-lg shadow-pistachio-200/50 flex items-center justify-center gap-2 disabled:opacity-70"
               >
-                {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Randevu Talebi Gönder'}
+                {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : t.contact.submitButton}
               </button>
             </form>
           </motion.div>

@@ -5,9 +5,13 @@ import Image from 'next/image';
 import { motion } from 'motion/react';
 import { useData } from '@/lib/data-context';
 import { ArrowRight } from 'lucide-react';
+import melekGorseli from '../public/melek.jpeg';
 
 const Hero = () => {
-  const { settings } = useData();
+  const { settings, t, language } = useData();
+
+  const heroTitle = language === 'en' && settings?.heroTitle_en ? settings.heroTitle_en : (settings?.heroTitle || t.hero.floatingCardTitle);
+  const heroSubtitle = language === 'en' && settings?.heroSubtitle_en ? settings.heroSubtitle_en : (settings?.heroSubtitle || t.hero.floatingCardSubtitle);
 
   return (
     <section className="relative min-h-screen flex items-center pt-20 overflow-hidden bg-beige-50">
@@ -37,7 +41,7 @@ const Hero = () => {
               }}
               className="inline-block px-4 py-1.5 mb-6 text-sm font-semibold tracking-wider text-pistachio-700 uppercase bg-pistachio-200/50 rounded-full"
             >
-              🎓 GAU | Psikolojik Danışman
+              {t.hero.badge}
             </motion.span>
             <motion.h1 
               variants={{
@@ -46,7 +50,7 @@ const Hero = () => {
               }}
               className="text-5xl md:text-6xl lg:text-7xl font-serif font-bold text-slate-900 leading-tight mb-6"
             >
-              {settings?.heroTitle || "Ruh Sağlığınız İçin Güvenli Bir Alan"}
+              {heroTitle}
             </motion.h1>
             <motion.p 
               variants={{
@@ -55,7 +59,7 @@ const Hero = () => {
               }}
               className="text-xl text-slate-600 mb-10 leading-relaxed max-w-xl font-light"
             >
-              {settings?.heroSubtitle || "Bilimsel temelli psikolojik yöntemler ve danışan odaklı yaklaşımımızla, ruh sağlığınızı destekliyoruz. Güvenli, empatik ve profesyonel danışmanlık süreçlerimizle kendinizi keşfetme ve iyileşme yolculuğunuzda yanınızdayız."}
+              {heroSubtitle}
             </motion.p>
             <motion.div 
               variants={{
@@ -68,13 +72,13 @@ const Hero = () => {
                 href="#iletisim"
                 className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-white bg-pistachio-400 rounded-2xl hover:bg-pistachio-500 transition-all shadow-lg shadow-pistachio-200/50"
               >
-                Randevu Al <ArrowRight className="ml-2 w-5 h-5" />
+                {t.hero.ctaAppointment} <ArrowRight className="ml-2 w-5 h-5" />
               </a>
               <a
                 href="#hizmetler"
                 className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-pistachio-700 bg-white border-2 border-pistachio-200 rounded-2xl hover:bg-pistachio-50 transition-all"
               >
-                Hizmetlerimiz
+                {t.hero.ctaServices}
               </a>
             </motion.div>
           </motion.div>
@@ -113,7 +117,7 @@ const Hero = () => {
 
             <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-video lg:aspect-[1.4/1]">
               <Image
-                src={settings?.aboutImage || "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&q=80&w=1200"}
+                src={settings?.aboutImage && settings.aboutImage.includes('http') ? settings.aboutImage : melekGorseli}
                 alt="Huzurlu Terapi Alanı"
                 fill
                 className="object-cover"
@@ -146,8 +150,8 @@ const Hero = () => {
                   </motion.div>
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-slate-900">İçsel Huzur</p>
-                  <p className="text-xs text-slate-500">Sizin İçin Buradayız</p>
+                  <p className="text-sm font-bold text-slate-900">{t.hero.floatingCardTitle}</p>
+                  <p className="text-xs text-slate-500">{t.hero.floatingCardSubtitle}</p>
                 </div>
               </div>
             </motion.div>

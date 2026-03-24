@@ -3,38 +3,41 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { Shield, Heart, Target, Sparkles, BookOpen, Users } from 'lucide-react';
+import { useData } from '@/lib/data-context';
 
 const VisionApproach = () => {
+  const { t, language } = useData();
+
   const principles = [
     {
       icon: <Shield className="w-6 h-6" />,
-      title: "Gizlilik ve Etik",
-      description: "Tüm görüşmelerimiz tam gizlilik prensibi ve mesleki etik kurallar çerçevesinde gerçekleştirilir."
+      title: language === 'tr' ? "Gizlilik ve Etik" : "Confidentiality and Ethics",
+      description: language === 'tr' ? "Tüm görüşmelerimiz tam gizlilik prensibi ve mesleki etik kurallar çerçevesinde gerçekleştirilir." : "All our sessions are conducted within the framework of full confidentiality principles and professional ethical rules."
     },
     {
       icon: <Heart className="w-6 h-6" />,
-      title: "Empatik Yaklaşım",
-      description: "Yargılamadan, anlamaya odaklı ve şefkatli bir dinleme alanı sunuyorum."
+      title: language === 'tr' ? "Empatik Yaklaşım" : "Empathetic Approach",
+      description: language === 'tr' ? "Yargılamadan, anlamaya odaklı ve şefkatli bir dinleme alanı sunuyorum." : "I offer a non-judgmental, understanding-oriented and compassionate listening space."
     },
     {
       icon: <Target className="w-6 h-6" />,
-      title: "Çözüm Odaklılık",
-      description: "Sadece sorunlara değil, danışanın güçlü yönlerine ve potansiyeline odaklanıyoruz."
+      title: language === 'tr' ? "Çözüm Odaklılık" : "Solution Orientation",
+      description: language === 'tr' ? "Sadece sorunlara değil, danışanın güçlü yönlerine ve potansiyeline odaklanıyoruz." : "We focus not only on problems but also on the client's strengths and potential."
     }
   ];
 
   const methods = [
     {
-      title: "Bilişsel Davranışçı Terapi (BDT)",
-      text: "Düşünce, duygu ve davranış arasındaki ilişkiyi inceleyerek işlevsel olmayan kalıpları dönüştürmeyi hedefler."
+      title: language === 'tr' ? "Bilişsel Davranışçı Terapi (BDT)" : "Cognitive Behavioral Therapy (CBT)",
+      text: language === 'tr' ? "Düşünce, duygu ve davranış arasındaki ilişkiyi inceleyerek işlevsel olmayan kalıpları dönüştürmeyi hedefler." : "It aims to transform non-functional patterns by examining the relationship between thought, emotion and behavior."
     },
     {
-      title: "Oyun Terapisi",
-      text: "Çocukların dünyayı anlama ve duygularını ifade etme dili olan oyun aracılığıyla iyileşme sürecidir."
+      title: language === 'tr' ? "Oyun Terapisi" : "Play Therapy",
+      text: language === 'tr' ? "Çocukların dünyayı anlama ve duygularını ifade etme dili olan oyun aracılığıyla iyileşme sürecidir." : "It is a healing process through play, which is the language of children to understand the world and express their emotions."
     },
     {
-      title: "Hümanistik Yaklaşım",
-      text: "Bireyin kendi potansiyelini gerçekleştirmesine ve öz-farkındalık kazanmasına rehberlik eder."
+      title: language === 'tr' ? "Hümanistik Yaklaşım" : "Humanistic Approach",
+      text: language === 'tr' ? "Bireyin kendi potansiyelini gerçekleştirmesine ve öz-farkındalık kazanmasına rehberlik eder." : "It guides the individual to realize their own potential and gain self-awareness."
     }
   ];
 
@@ -49,12 +52,12 @@ const VisionApproach = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-sm font-bold tracking-widest text-pistachio-600 uppercase mb-4">Vizyonum & Yaklaşımım</h2>
+            <h2 className="text-sm font-bold tracking-widest text-pistachio-600 uppercase mb-4">{t.vision.badge}</h2>
             <h3 className="text-4xl font-serif font-bold text-slate-900 mb-6 leading-tight">
-              Ruh Sağlığına <span className="text-pistachio-500">Bütüncül</span> ve <span className="text-pistachio-500">İnsan Odaklı</span> Bir Bakış
+              {t.vision.titleStart} <span className="text-pistachio-500">{t.vision.titleHighlight1}</span> {t.vision.titleAnd} <span className="text-pistachio-500">{t.vision.titleHighlight2}</span> {t.vision.titleEnd}
             </h3>
             <p className="text-lg text-slate-600 mb-10 leading-relaxed">
-              Psikolojik danışmanlık sürecini, sadece sorunların çözüldüğü bir alan değil, bireyin kendi iç dünyasını keşfettiği ve yaşam kalitesini artırdığı bir dönüşüm yolculuğu olarak görüyorum. Bilimsel temelli yöntemleri, her danışanın biricikliğine saygı duyarak harmanlıyorum.
+              {t.vision.description}
             </p>
 
             <div className="space-y-8">
@@ -90,7 +93,7 @@ const VisionApproach = () => {
             >
               <div className="flex items-center gap-3 mb-8">
                 <Sparkles className="w-6 h-6 text-pistachio-500" />
-                <h4 className="text-2xl font-serif font-bold text-slate-900">Kullandığım Yöntemler</h4>
+                <h4 className="text-2xl font-serif font-bold text-slate-900">{t.vision.methodsTitle}</h4>
               </div>
               
               <div className="space-y-8">
@@ -111,7 +114,7 @@ const VisionApproach = () => {
                     </div>
                   ))}
                 </div>
-                <p className="text-sm text-slate-500 font-medium">Danışan odaklı, güvenli ve profesyonel süreç yönetimi.</p>
+                <p className="text-sm text-slate-500 font-medium">{t.vision.clientFocus}</p>
               </div>
             </motion.div>
 
@@ -152,9 +155,9 @@ const VisionApproach = () => {
         >
           <div className="relative z-10 max-w-3xl mx-auto">
             <BookOpen className="w-12 h-12 mx-auto mb-6 opacity-80" />
-            <h4 className="text-3xl font-serif font-bold mb-6">Sürekli Gelişim ve Bilimsel Yaklaşım</h4>
+            <h4 className="text-3xl font-serif font-bold mb-6">{t.vision.commitmentTitle}</h4>
             <p className="text-lg text-white/90 leading-relaxed">
-              Psikoloji dinamik bir alan. Bu nedenle mesleki gelişimimi güncel eğitimler ve süpervizyon çalışmalarıyla sürekli destekliyor, danışanlarıma en güncel ve etkili yöntemlerle yardımcı olmayı taahhüt ediyorum.
+              {t.vision.commitmentDesc}
             </p>
           </div>
           {/* Abstract background pattern */}

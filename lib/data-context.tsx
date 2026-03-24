@@ -4,22 +4,29 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { auth, db } from './firebase';
 import { doc, onSnapshot, collection, query, orderBy, getDocFromServer } from 'firebase/firestore';
 import { onAuthStateChanged, User } from 'firebase/auth';
+import { translations, Language, TranslationType } from './translations';
 
 interface SiteSettings {
   heroTitle: string;
+  heroTitle_en?: string;
   heroSubtitle: string;
+  heroSubtitle_en?: string;
   aboutText: string;
+  aboutText_en?: string;
   aboutImage: string;
   email: string;
   instagram: string;
   consultantName: string;
   consultantTitle: string;
+  consultantTitle_en?: string;
 }
 
 interface Service {
   id: string;
   title: string;
+  title_en?: string;
   description: string;
+  description_en?: string;
   icon: string;
   order: number;
 }
@@ -30,6 +37,9 @@ interface DataContextType {
   user: User | null;
   isAdmin: boolean;
   loading: boolean;
+  language: Language;
+  setLanguage: (lang: Language) => void;
+  t: TranslationType;
 }
 
 const DataContext = createContext<DataContextType>({
@@ -38,6 +48,9 @@ const DataContext = createContext<DataContextType>({
   user: null,
   isAdmin: false,
   loading: true,
+  language: 'tr',
+  setLanguage: () => {},
+  t: translations.tr,
 });
 
 export const DataProvider = ({ children }: { children: React.ReactNode }) => {
@@ -46,6 +59,23 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [language, setLanguageState] = useState<Language>('tr');
+
+  // Initialize language from localStorage
+  useEffect(() => {
+    const savedLang = localStorage.getItem('site_language') as Language;
+    if (savedLang && (savedLang === 'tr' || savedLang === 'en')) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setLanguageState(savedLang);
+    }
+  }, []);
+
+  const setLanguage = (lang: Language) => {
+    setLanguageState(lang);
+    localStorage.setItem('site_language', lang);
+  };
+
+  const t = translations[language];
 
   useEffect(() => {
     const unsubAuth = onAuthStateChanged(auth, (u) => {
@@ -72,13 +102,17 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
         // Default data if none exists
         setSettings({
           heroTitle: "Ruh Sağlığınız İçin Güvenli Bir Alan",
+          heroTitle_en: "A Safe Space for Your Mental Health",
           heroSubtitle: "Bilimsel temelli psikolojik yöntemler ve danışan odaklı yaklaşımımızla, ruh sağlığınızı destekliyoruz. Güvenli, empatik ve profesyonel danışmanlık süreçlerimizle kendinizi keşfetme ve iyileşme yolculuğunuzda yanınızdayız.",
-          aboutText: "Girne Amerikan Üniversitesi Psikolojik Danışmanlık ve Rehberlik mezunu Meleknur Budak olarak, çocuk, ergen ve yetişkinlere yönelik profesyonel destek sunuyorum.",
-          aboutImage: "https://i.pinimg.com/736x/58/72/16/5872160891de431f8dd12947ef97c88f.jpg",
+          heroSubtitle_en: "We support your mental health with evidence-based psychological methods and our client-centered approach. We are with you on your journey of self-discovery and healing with our safe, empathetic and professional counseling processes.",
+          aboutText: "Girne Amerikan Üniversitesi Psikolojik Danışmanlık ve Rehberlik bölümünden %100 burslu ve onur öğrencisi olarak mezun olan Meleknur Budak, çocuk, ergen ve yetişkinlere yönelik profesyonel destek sunmaktadır. Lisans eğitimi süresince çeşitli seminer ve projelerde aktif olarak yer almıştır.",
+          aboutText_en: "Meleknur Budak, who graduated from Girne American University, Department of Psychological Counseling and Guidance as an honor student with a 100% scholarship, provides professional support for children, adolescents, and adults. She actively participated in various seminars and projects during her undergraduate education.",
+          aboutImage: "",
           email: "meleknurbudak4@gmail.com",
           instagram: "psk.dan.meleknurbudak",
           consultantName: "Meleknur Budak",
-          consultantTitle: "Psikolojik Danışman"
+          consultantTitle: "Psikolojik Danışman",
+          consultantTitle_en: "Psychological Counselor"
         });
       }
     }, (error) => {
@@ -95,10 +129,10 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
       if (servicesData.length === 0) {
         // Default services
         setServices([
-          { id: '1', title: 'Çocuk Danışmanlığı', description: 'Çocukların duygusal ve sosyal gelişimlerini destekliyoruz.', icon: 'Baby', order: 1 },
-          { id: '2', title: 'Ergen Danışmanlığı', description: 'Ergenlik dönemindeki zorluklarla başa çıkma desteği.', icon: 'User', order: 2 },
-          { id: '3', title: 'Yetişkin Danışmanlığı', description: 'Bireysel farkındalık ve iyileşme süreci.', icon: 'Users', order: 3 },
-          { id: '4', title: 'Online Bireysel Danışmanlık', description: 'Evinizin konforunda profesyonel destek.', icon: 'Globe', order: 4 }
+          { id: '1', title: 'Çocuk Danışmanlığı', title_en: 'Child Counseling', description: 'Çocukların duygusal ve sosyal gelişimlerini destekliyoruz.', description_en: 'We support the emotional and social development of children.', icon: 'Baby', order: 1 },
+          { id: '2', title: 'Ergen Danışmanlığı', title_en: 'Adolescent Counseling', description: 'Ergenlik dönemindeki zorluklarla başa çıkma desteği.', description_en: 'Support for coping with the challenges of adolescence.', icon: 'User', order: 2 },
+          { id: '3', title: 'Yetişkin Danışmanlığı', title_en: 'Adult Counseling', description: 'Bireysel farkındalık ve iyileşme süreci.', description_en: 'Individual awareness and healing process.', icon: 'Users', order: 3 },
+          { id: '4', title: 'Online Bireysel Danışmanlık', title_en: 'Online Individual Counseling', description: 'Evinizin konforunda profesyonel destek.', description_en: 'Professional support in the comfort of your home.', icon: 'Globe', order: 4 }
         ]);
       } else {
         setServices(servicesData);
@@ -117,7 +151,7 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   return (
-    <DataContext.Provider value={{ settings, services, user, isAdmin, loading }}>
+    <DataContext.Provider value={{ settings, services, user, isAdmin, loading, language, setLanguage, t }}>
       {children}
     </DataContext.Provider>
   );

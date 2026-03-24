@@ -19,7 +19,13 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'ais-pre-gmurdtqxe66t7nq3uxit7n-495551996573.europe-west2.run.app',
+        hostname: '**.run.app',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'storage.googleapis.com',
         port: '',
         pathname: '/**',
       },
@@ -44,6 +50,12 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'i.pinimg.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.hizliresim.com',
         port: '',
         pathname: '/**',
       },

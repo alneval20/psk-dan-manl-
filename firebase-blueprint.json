@@ -7,11 +7,19 @@
       "properties": {
         "title": {
           "type": "string",
-          "description": "The title of the service."
+          "description": "The title of the service in Turkish."
+        },
+        "title_en": {
+          "type": "string",
+          "description": "The title of the service in English."
         },
         "description": {
           "type": "string",
-          "description": "A brief description of the service."
+          "description": "A brief description of the service in Turkish."
+        },
+        "description_en": {
+          "type": "string",
+          "description": "A brief description of the service in English."
         },
         "icon": {
           "type": "string",
@@ -30,13 +38,17 @@
       "type": "object",
       "properties": {
         "heroTitle": { "type": "string" },
+        "heroTitle_en": { "type": "string" },
         "heroSubtitle": { "type": "string" },
+        "heroSubtitle_en": { "type": "string" },
         "aboutText": { "type": "string" },
+        "aboutText_en": { "type": "string" },
         "aboutImage": { "type": "string" },
         "email": { "type": "string" },
         "instagram": { "type": "string" },
         "consultantName": { "type": "string" },
-        "consultantTitle": { "type": "string" }
+        "consultantTitle": { "type": "string" },
+        "consultantTitle_en": { "type": "string" }
       },
       "required": ["heroTitle", "heroSubtitle", "aboutText", "email", "instagram", "consultantName"]
     },

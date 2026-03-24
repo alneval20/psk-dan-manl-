@@ -5,52 +5,76 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useData } from '@/lib/data-context';
 import * as LucideIcons from 'lucide-react';
 
-const serviceDetails: Record<string, { details: string[], image: string }> = {
-  'Çocuk Danışmanlığı': {
-    details: [
-      'Oyun Terapisi Yaklaşımı',
-      'Duygusal Düzenleme Becerileri',
-      'Davranışsal Sorunlarla Baş Etme',
-      'Okul Uyum Süreçleri',
-      'Kaygı ve Korku Yönetimi'
-    ],
-    image: 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&q=80&w=800'
-  },
-  'Ergen Danışmanlığı': {
-    details: [
-      'Kimlik ve Benlik Gelişimi',
-      'Sınav Kaygısı ve Motivasyon',
-      'Akran İlişkileri ve Sosyal Kaygı',
-      'Aile İçi İletişim Çatışmaları',
-      'Teknoloji ve Sosyal Medya Kullanımı'
-    ],
-    image: 'https://canakkalepsikolog.com.tr/assets/canakkale-ergen-danismanligi-BKNq8MHQ.jpg'
-  },
-  'Yetişkin Danışmanlığı': {
-    details: [
-      'Bireysel Farkındalık Çalışmaları',
-      'Depresyon ve Kaygı Bozuklukları',
-      'İlişki ve Evlilik Sorunları',
-      'Stres ve Öfke Yönetimi',
-      'Kayıp ve Yas Süreçleri'
-    ],
-    image: 'https://images.pexels.com/photos/10029741/pexels-photo-10029741.jpeg'
-  },
-  'Online Bireysel Danışmanlık': {
-    details: [
-      'Güvenli ve Gizli Platform',
-      'Mekan Bağımsız Terapi İmkanı',
-      'Esnek Randevu Saatleri',
-      'Yurt Dışı ve Şehir Dışı Erişim',
-      'Görüntülü Görüşme Konforu'
-    ],
-    image: 'https://images.unsplash.com/photo-1588196749597-9ff075ee6b5b?auto=format&fit=crop&q=80&w=800'
-  }
-};
-
 const Services = () => {
-  const { services } = useData();
+  const { services, t, language } = useData();
   const [selectedService, setSelectedService] = useState<string | null>(null);
+
+  const serviceDetails: Record<string, { details: string[], image: string }> = {
+    'Çocuk Danışmanlığı': {
+      details: language === 'tr' ? [
+        'Oyun Terapisi Yaklaşımı',
+        'Duygusal Düzenleme Becerileri',
+        'Davranışsal Sorunlarla Baş Etme',
+        'Okul Uyum Süreçleri',
+        'Kaygı ve Korku Yönetimi'
+      ] : [
+        'Play Therapy Approach',
+        'Emotional Regulation Skills',
+        'Coping with Behavioral Problems',
+        'School Adaptation Processes',
+        'Anxiety and Fear Management'
+      ],
+      image: 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&q=80&w=800'
+    },
+    'Ergen Danışmanlığı': {
+      details: language === 'tr' ? [
+        'Kimlik ve Benlik Gelişimi',
+        'Sınav Kaygısı ve Motivasyon',
+        'Akran İlişkileri ve Sosyal Kaygı',
+        'Aile İçi İletişim Çatışmaları',
+        'Teknoloji ve Sosyal Medya Kullanımı'
+      ] : [
+        'Identity and Self Development',
+        'Exam Anxiety and Motivation',
+        'Peer Relationships and Social Anxiety',
+        'Family Communication Conflicts',
+        'Technology and Social Media Use'
+      ],
+      image: 'https://canakkalepsikolog.com.tr/assets/canakkale-ergen-danismanligi-BKNq8MHQ.jpg'
+    },
+    'Yetişkin Danışmanlığı': {
+      details: language === 'tr' ? [
+        'Bireysel Farkındalık Çalışmaları',
+        'Depresyon ve Kaygı Bozuklukları',
+        'İlişki ve Evlilik Sorunları',
+        'Stres ve Öfke Yönetimi',
+        'Kayıp ve Yas Süreçleri'
+      ] : [
+        'Individual Awareness Studies',
+        'Depression and Anxiety Disorders',
+        'Relationship and Marriage Problems',
+        'Stress and Anger Management',
+        'Loss and Grief Processes'
+      ],
+      image: 'https://images.pexels.com/photos/10029741/pexels-photo-10029741.jpeg'
+    },
+    'Online Bireysel Danışmanlık': {
+      details: language === 'tr' ? [
+        'Güvenli ve Gizli Platform',
+        'Mekan Bağımsız Terapi İmkanı',
+        'Esnek Randevu Saatleri',
+        'Yurt Dışı ve Şehir Dışı Erişim',
+        'Görüntülü Görüşme Konforu'
+      ] : [
+        'Secure and Confidential Platform',
+        'Location-Independent Therapy Opportunity',
+        'Flexible Appointment Hours',
+        'International and Out-of-City Access',
+        'Video Call Comfort'
+      ],
+      image: 'https://images.unsplash.com/photo-1588196749597-9ff075ee6b5b?auto=format&fit=crop&q=80&w=800'
+    }
+  };
 
   const getIcon = (iconName: string) => {
     const Icon = (LucideIcons as any)[iconName] || LucideIcons.Heart;
@@ -68,7 +92,7 @@ const Services = () => {
             whileInView={{ opacity: 1, y: 0 }}
             className="text-sm font-bold tracking-widest text-pistachio-600 uppercase mb-4"
           >
-            Hizmetlerimiz
+            {t.services.badge}
           </motion.h2>
           <motion.h3 
             initial={{ opacity: 0, y: 10 }}
@@ -76,7 +100,7 @@ const Services = () => {
             transition={{ delay: 0.1 }}
             className="text-4xl font-serif font-bold text-slate-900 mb-6"
           >
-            Size Özel Profesyonel Destek
+            {t.services.title}
           </motion.h3>
           <motion.p 
             initial={{ opacity: 0, y: 10 }}
@@ -84,30 +108,35 @@ const Services = () => {
             transition={{ delay: 0.2 }}
             className="text-lg text-slate-600"
           >
-            Detaylı bilgi almak için hizmetlerimize tıklayabilirsiniz.
+            {t.services.subtitle}
           </motion.p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {services.map((service, index) => (
-            <motion.div
-              key={service.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              onClick={() => setSelectedService(service.title)}
-              className={`cursor-pointer p-8 rounded-[2rem] shadow-sm hover:shadow-xl transition-all duration-300 border group ${selectedService === service.title ? 'bg-pistachio-500 text-white border-pistachio-500' : 'bg-white text-slate-900 border-pistachio-100/50'}`}
-            >
-              <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-colors duration-300 ${selectedService === service.title ? 'bg-white/20 text-white' : 'bg-pistachio-50 text-pistachio-600 group-hover:bg-pistachio-500 group-hover:text-white'}`}>
-                {getIcon(service.icon)}
-              </div>
-              <h4 className={`text-xl font-bold mb-4 ${selectedService === service.title ? 'text-white' : 'text-slate-900'}`}>{service.title}</h4>
-              <p className={`leading-relaxed ${selectedService === service.title ? 'text-white/90' : 'text-slate-600'}`}>
-                {service.description}
-              </p>
-            </motion.div>
-          ))}
+          {services.map((service, index) => {
+            const title = language === 'en' && service.title_en ? service.title_en : service.title;
+            const description = language === 'en' && service.description_en ? service.description_en : service.description;
+            
+            return (
+              <motion.div
+                key={service.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                onClick={() => setSelectedService(service.title)}
+                className={`cursor-pointer p-8 rounded-[2rem] shadow-sm hover:shadow-xl transition-all duration-300 border group ${selectedService === service.title ? 'bg-pistachio-500 text-white border-pistachio-500' : 'bg-white text-slate-900 border-pistachio-100/50'}`}
+              >
+                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-colors duration-300 ${selectedService === service.title ? 'bg-white/20 text-white' : 'bg-pistachio-50 text-pistachio-600 group-hover:bg-pistachio-500 group-hover:text-white'}`}>
+                  {getIcon(service.icon)}
+                </div>
+                <h4 className={`text-xl font-bold mb-4 ${selectedService === service.title ? 'text-white' : 'text-slate-900'}`}>{title}</h4>
+                <p className={`leading-relaxed ${selectedService === service.title ? 'text-white/90' : 'text-slate-600'}`}>
+                  {description}
+                </p>
+              </motion.div>
+            );
+          })}
         </div>
 
         <AnimatePresence mode="wait">
@@ -125,7 +154,9 @@ const Services = () => {
                     <div className="w-12 h-12 bg-pistachio-100 text-pistachio-600 rounded-full flex items-center justify-center">
                       <LucideIcons.CheckCircle2 className="w-6 h-6" />
                     </div>
-                    <h4 className="text-3xl font-serif font-bold text-slate-900">{selectedService} Detayları</h4>
+                    <h4 className="text-3xl font-serif font-bold text-slate-900">
+                      {(language === 'en' && services.find(s => s.title === selectedService)?.title_en) || selectedService} {t.services.detailsTitle}
+                    </h4>
                   </div>
                   <ul className="space-y-6">
                     {currentDetail.details.map((item, i) => (
@@ -147,14 +178,14 @@ const Services = () => {
                       onClick={() => setSelectedService(null)}
                       className="px-8 py-3 bg-pistachio-500 text-white rounded-xl hover:bg-pistachio-600 transition-all font-bold shadow-lg shadow-pistachio-200/50 flex items-center gap-2 group"
                     >
-                      Randevu Al 
+                      {t.services.ctaAppointment} 
                       <LucideIcons.ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </a>
                     <button 
                       onClick={() => setSelectedService(null)}
                       className="px-8 py-3 bg-slate-100 text-slate-600 rounded-xl hover:bg-slate-200 transition-all font-medium"
                     >
-                      Kapat
+                      {t.services.close}
                     </button>
                   </div>
                 </div>
@@ -188,8 +219,8 @@ const Services = () => {
               <LucideIcons.Globe className="w-10 h-10" />
             </div>
             <div>
-              <h4 className="text-2xl font-bold text-slate-900 mb-2">📍 Online Bireysel Danışmanlık</h4>
-              <p className="text-slate-600">Mekan sınırı olmaksızın, güvenli dijital platformlar üzerinden profesyonel destek alabilirsiniz.</p>
+              <h4 className="text-2xl font-bold text-slate-900 mb-2">{t.services.onlineTitle}</h4>
+              <p className="text-slate-600">{t.services.onlineDesc}</p>
             </div>
           </motion.div>
           <motion.div 
@@ -200,8 +231,8 @@ const Services = () => {
               <LucideIcons.Users className="w-10 h-10" />
             </div>
             <div>
-              <h4 className="text-2xl font-bold text-slate-900 mb-2">🎯 Çocuk – Ergen – Yetişkin</h4>
-              <p className="text-slate-600">Her yaş grubuna özel, gelişimsel dönemlere uygun terapi yaklaşımları uyguluyoruz.</p>
+              <h4 className="text-2xl font-bold text-slate-900 mb-2">{t.services.ageGroupsTitle}</h4>
+              <p className="text-slate-600">{t.services.ageGroupsDesc}</p>
             </div>
           </motion.div>
         </div>

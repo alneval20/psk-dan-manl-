@@ -10,7 +10,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const { settings, isAdmin } = useData();
+  const { settings, isAdmin, language, setLanguage, t, services: dataServices } = useData();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -21,18 +21,23 @@ const Navbar = () => {
   }, []);
 
   const navLinks = [
-    { name: 'Ana Sayfa', href: '/' },
-    { name: 'Hakkımda', href: '/hakkimda' },
-    { name: 'Vizyonum', href: '/vizyonum' },
-    { name: 'Hizmetler', href: '/#hizmetler', dropdown: true },
-    { name: 'İletişim', href: '/#iletisim' },
+    { name: t.nav.home, href: '/' },
+    { name: t.nav.about, href: '/hakkimda' },
+    { name: t.nav.vision, href: '/vizyonum' },
+    { name: t.nav.services, href: '/#hizmetler', dropdown: true },
+    { name: t.nav.contact, href: '/#iletisim' },
   ];
 
-  const services = [
-    { name: 'Çocuk Danışmanlığı', href: '/#hizmetler' },
-    { name: 'Ergen Danışmanlığı', href: '/#hizmetler' },
-    { name: 'Yetişkin Danışmanlığı', href: '/#hizmetler' },
-  ];
+  const navServices = dataServices.length > 0 
+    ? dataServices.map(s => ({
+        name: language === 'en' && s.title_en ? s.title_en : s.title,
+        href: '/#hizmetler'
+      }))
+    : [
+        { name: language === 'tr' ? 'Çocuk Danışmanlığı' : 'Child Counseling', href: '/#hizmetler' },
+        { name: language === 'tr' ? 'Ergen Danışmanlığı' : 'Adolescent Counseling', href: '/#hizmetler' },
+        { name: language === 'tr' ? 'Yetişkin Danışmanlığı' : 'Adult Counseling', href: '/#hizmetler' },
+      ];
 
   return (
     <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white/90 backdrop-blur-md shadow-sm py-3' : 'bg-transparent py-5'}`}>
@@ -40,7 +45,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center">
           <div className="flex-shrink-0">
             <Link href="/" className="text-2xl font-serif font-bold text-slate-800 tracking-tight">
-              Psk. Dan. <span className="text-pistachio-500">Meleknur Budak</span>
+              {t.nav.titlePrefix} <span className="text-pistachio-500">Meleknur Budak</span>
             </Link>
           </div>
 
@@ -66,7 +71,7 @@ const Navbar = () => {
                     onMouseLeave={() => setIsDropdownOpen(false)}
                     className={`absolute left-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-slate-100 overflow-hidden transition-all duration-200 ${isDropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}
                   >
-                    {services.map((service) => (
+                    {navServices.map((service) => (
                       <Link
                         key={service.name}
                         href={service.href}
@@ -91,11 +96,27 @@ const Navbar = () => {
               <Link
                 href="/admin"
                 className="p-2 bg-pistachio-600 text-white rounded-full hover:bg-pistachio-700 transition-colors shadow-md"
-                title="Admin Paneli"
+                title={t.nav.admin}
               >
                 <UserIcon className="w-5 h-5" />
               </Link>
             )}
+
+            {/* Language Switcher */}
+            <div className="flex items-center bg-beige-100 rounded-full p-1 ml-2">
+              <button
+                onClick={() => setLanguage('tr')}
+                className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${language === 'tr' ? 'bg-white text-pistachio-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+              >
+                TR
+              </button>
+              <button
+                onClick={() => setLanguage('en')}
+                className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${language === 'en' ? 'bg-white text-pistachio-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+              >
+                EN
+              </button>
+            </div>
           </div>
 
           {/* Mobile Menu Button */}
@@ -128,7 +149,7 @@ const Navbar = () => {
                   </Link>
                   {link.dropdown && (
                     <div className="pl-6 space-y-1">
-                      {services.map((service) => (
+                      {navServices.map((service) => (
                         <Link
                           key={service.name}
                           href={service.href}
@@ -150,9 +171,28 @@ const Navbar = () => {
                   className="flex items-center space-x-2 text-pistachio-500 font-medium"
                 >
                   <Instagram className="w-5 h-5" />
-                  <span>Instagram&apos;da Takip Et</span>
+                  <span>{t.nav.followInstagram}</span>
                 </a>
               </div>
+
+              {/* Mobile Language Switcher */}
+              <div className="pt-4 flex justify-center">
+                <div className="flex items-center bg-white rounded-full p-1 border border-slate-100">
+                  <button
+                    onClick={() => setLanguage('tr')}
+                    className={`px-6 py-2 text-sm font-bold rounded-full transition-all ${language === 'tr' ? 'bg-pistachio-500 text-white shadow-md' : 'text-slate-400'}`}
+                  >
+                    Türkçe
+                  </button>
+                  <button
+                    onClick={() => setLanguage('en')}
+                    className={`px-6 py-2 text-sm font-bold rounded-full transition-all ${language === 'en' ? 'bg-pistachio-500 text-white shadow-md' : 'text-slate-400'}`}
+                  >
+                    English
+                  </button>
+                </div>
+              </div>
+
               {isAdmin && (
                 <div className="pt-4 flex justify-center border-t border-slate-100 mt-4">
                   <Link
@@ -161,7 +201,7 @@ const Navbar = () => {
                     className="flex items-center space-x-2 text-pistachio-600 font-bold"
                   >
                     <UserIcon className="w-5 h-5" />
-                    <span>Admin Paneli</span>
+                    <span>{t.nav.admin}</span>
                   </Link>
                 </div>
               )}

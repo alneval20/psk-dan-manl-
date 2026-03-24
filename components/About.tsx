@@ -4,9 +4,15 @@ import React from 'react';
 import Image from 'next/image';
 import { motion } from 'motion/react';
 import { useData } from '@/lib/data-context';
+import melekGorseli from '../public/melek.jpeg';
 
 const About = () => {
-  const { settings } = useData();
+  const { settings, t, language } = useData();
+
+ 
+
+  const aboutText = language === 'en' && settings?.aboutText_en ? settings.aboutText_en : (settings?.aboutText || t.about.aboutText);
+  const consultantTitle = language === 'en' && settings?.consultantTitle_en ? settings.consultantTitle_en : (settings?.consultantTitle || (language === 'tr' ? 'Psikolojik Danışman' : 'Psychological Counselor'));
 
   return (
     <section id="hakkimda" className="py-24 bg-beige-50">
@@ -18,25 +24,25 @@ const About = () => {
             viewport={{ once: true }}
             className="order-2 lg:order-1"
           >
-            <h2 className="text-sm font-bold tracking-widest text-pistachio-600 uppercase mb-4">Hakkımda</h2>
+            <h2 className="text-sm font-bold tracking-widest text-pistachio-600 uppercase mb-4">{t.about.badge}</h2>
             <h3 className="text-4xl font-serif font-bold text-slate-900 mb-8">
-              Psk. Dan. <span className="text-pistachio-500">{settings?.consultantName || "Meleknur Budak"}</span>
+              {language === 'tr' ? 'Psk. Dan.' : 'Couns.'} <span className="text-pistachio-500">{settings?.consultantName || "Meleknur Budak"}</span>
             </h3>
             <div className="space-y-6 text-lg text-slate-600 leading-relaxed">
               <p>
-                {settings?.aboutText || "Girne Amerikan Üniversitesi Psikolojik Danışmanlık ve Rehberlik mezunu Meleknur Budak olarak, çocuk, ergen ve yetişkinlere yönelik profesyonel destek sunuyorum."}
+                {aboutText}
               </p>
               <p>
-                Terapi sürecinde her bireyin benzersiz olduğunu ve her yolculuğun kendine has bir hızı olduğunu biliyorum. Amacım, size bu yolculukta eşlik etmek, kendinizi daha iyi anlamanıza ve yaşam kalitenizi artırmanıza yardımcı olmaktır.
+                {t.about.description2}
               </p>
               <div className="pt-4 grid grid-cols-2 gap-6">
                 <div className="p-4 bg-white rounded-2xl border border-beige-200">
                   <p className="text-3xl font-bold text-pistachio-500 mb-1">GAU</p>
-                  <p className="text-sm text-slate-500 uppercase tracking-wide">Mezuniyet</p>
+                  <p className="text-sm text-slate-500 uppercase tracking-wide">{t.about.graduation}</p>
                 </div>
                 <div className="p-4 bg-white rounded-2xl border border-beige-200">
                   <p className="text-3xl font-bold text-pistachio-500 mb-1">100+</p>
-                  <p className="text-sm text-slate-500 uppercase tracking-wide">Danışan</p>
+                  <p className="text-sm text-slate-500 uppercase tracking-wide">{t.about.clients}</p>
                 </div>
               </div>
             </div>
@@ -50,7 +56,7 @@ const About = () => {
           >
             <div className="relative rounded-[2rem] overflow-hidden shadow-2xl aspect-square">
               <Image
-                src={settings?.aboutImage || "https://picsum.photos/seed/consultant/800/800"}
+                src={settings?.aboutImage && settings.aboutImage.includes('http') ? settings.aboutImage : melekGorseli}
                 alt="Meleknur Budak"
                 fill
                 className="object-cover"
