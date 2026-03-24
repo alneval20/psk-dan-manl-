@@ -47,13 +47,16 @@ interface AdminPanelProps {
 }
 
 const AdminPanel = ({ onClose }: AdminPanelProps) => {
-  const { user, isAdmin, loading: dataLoading, settings: currentSettings, services: currentServices } = useData();
+  const { user, isAdmin, loading: dataLoading, settings: currentSettings, services: currentServices, availability: availabilityList } = useData();
   const router = useRouter();
   const pathname = usePathname();
-  const [activeTab, setActiveTab] = useState<'settings' | 'services' | 'appointments'>('settings');
+  const [activeTab, setActiveTab] = useState<'settings' | 'services' | 'appointments' | 'availability'>('settings');
   
   const [appointments, setAppointments] = useState<any[]>([]);
   const [selectedAppointment, setSelectedAppointment] = useState<any | null>(null);
+
+  const [newDate, setNewDate] = useState('');
+  const [newSlot, setNewSlot] = useState('');
 
   const [settingsForm, setSettingsForm] = useState(currentSettings || {
     heroTitle: "",
@@ -184,6 +187,54 @@ const AdminPanel = ({ onClose }: AdminPanelProps) => {
     }
   };
 
+  const handleAddAvailability = async () => {
+    if (!newDate) return;
+    try {
+      await addDoc(collection(db, 'availability'), {
+        date: newDate,
+        slots: []
+      });
+      setNewDate('');
+      setStatus({ type: 'success', message: 'Tarih eklendi.' });
+    } catch (error) {
+      setStatus({ type: 'error', message: 'Ekleme hatası.' });
+    }
+  };
+
+  const handleAddSlot = async (id: string, currentSlots: string[]) => {
+    if (!newSlot) return;
+    try {
+      await updateDoc(doc(db, 'availability', id), {
+        slots: [...currentSlots, newSlot].sort()
+      });
+      setNewSlot('');
+      setStatus({ type: 'success', message: 'Saat eklendi.' });
+    } catch (error) {
+      setStatus({ type: 'error', message: 'Ekleme hatası.' });
+    }
+  };
+
+  const handleRemoveSlot = async (id: string, currentSlots: string[], slotToRemove: string) => {
+    try {
+      await updateDoc(doc(db, 'availability', id), {
+        slots: currentSlots.filter(s => s !== slotToRemove)
+      });
+      setStatus({ type: 'success', message: 'Saat silindi.' });
+    } catch (error) {
+      setStatus({ type: 'error', message: 'Silme hatası.' });
+    }
+  };
+
+  const handleDeleteAvailability = async (id: string) => {
+    if (!confirm("Bu tarihi ve tüm saatlerini silmek istediğinize emin misiniz?")) return;
+    try {
+      await deleteDoc(doc(db, 'availability', id));
+      setStatus({ type: 'success', message: 'Tarih silindi.' });
+    } catch (error) {
+      setStatus({ type: 'error', message: 'Silme hatası.' });
+    }
+  };
+
   if (dataLoading) return <div className="flex items-center justify-center h-screen">Yükleniyor...</div>;
 
   if (!user) {
@@ -252,6 +303,12 @@ const AdminPanel = ({ onClose }: AdminPanelProps) => {
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'appointments' ? 'bg-pistachio-50 text-pistachio-700 font-bold' : 'text-slate-600 hover:bg-beige-50'}`}
           >
             <Calendar className="w-5 h-5" /> Randevu Talepleri
+          </button>
+          <button 
+            onClick={() => setActiveTab('availability')}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'availability' ? 'bg-pistachio-50 text-pistachio-700 font-bold' : 'text-slate-600 hover:bg-beige-50'}`}
+          >
+            <Clock className="w-5 h-5" /> Çalışma Saatleri
           </button>
         </nav>
 
@@ -549,6 +606,83 @@ const AdminPanel = ({ onClose }: AdminPanelProps) => {
                   </div>
                 )}
               </div>
+            </div>
+          </div>
+        )}
+        {activeTab === 'availability' && (
+          <div className="max-w-4xl">
+            <div className="flex justify-between items-center mb-8">
+              <h2 className="text-3xl font-bold text-slate-900">Çalışma Saatleri</h2>
+              <div className="flex gap-4">
+                <input 
+                  type="date" 
+                  value={newDate}
+                  onChange={e => setNewDate(e.target.value)}
+                  className="px-4 py-2 bg-white border border-beige-200 rounded-xl outline-none focus:ring-2 focus:ring-pistachio-500/20"
+                />
+                <button 
+                  onClick={handleAddAvailability}
+                  className="flex items-center gap-2 px-6 py-3 bg-pistachio-600 text-white font-bold rounded-xl hover:bg-pistachio-700 transition-all"
+                >
+                  <Plus className="w-5 h-5" /> Tarih Ekle
+                </button>
+              </div>
+            </div>
+
+            <div className="grid gap-6">
+              {(availabilityList || []).map((avail) => (
+                <div key={avail.id} className="bg-white p-8 rounded-3xl border border-beige-200 shadow-sm">
+                  <div className="flex justify-between items-center mb-6">
+                    <h3 className="text-xl font-bold text-slate-800">
+                      {new Date(avail.date).toLocaleDateString('tr-TR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                    </h3>
+                    <button 
+                      onClick={() => handleDeleteAvailability(avail.id)}
+                      className="p-2 text-rose-500 hover:bg-rose-50 rounded-xl transition-colors"
+                    >
+                      <Trash2 className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  <div className="flex flex-wrap gap-3 mb-6">
+                    {(avail.slots || []).map((slot) => (
+                      <div key={slot} className="flex items-center gap-2 px-4 py-2 bg-pistachio-50 text-pistachio-700 rounded-xl font-bold group">
+                        {slot}
+                        <button 
+                          onClick={() => handleRemoveSlot(avail.id, avail.slots, slot)}
+                          className="text-pistachio-300 hover:text-rose-500 transition-colors"
+                        >
+                          <Plus className="w-4 h-4 rotate-45" />
+                        </button>
+                      </div>
+                    ))}
+                    {(avail.slots || []).length === 0 && (
+                      <p className="text-slate-400 italic text-sm">Henüz saat eklenmemiş.</p>
+                    )}
+                  </div>
+
+                  <div className="flex gap-3 pt-6 border-t border-slate-50">
+                    <input 
+                      type="time" 
+                      value={newSlot}
+                      onChange={e => setNewSlot(e.target.value)}
+                      className="px-4 py-2 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-pistachio-500/20"
+                    />
+                    <button 
+                      onClick={() => handleAddSlot(avail.id, avail.slots)}
+                      className="px-6 py-2 bg-slate-800 text-white text-sm font-bold rounded-xl hover:bg-slate-900 transition-all"
+                    >
+                      Saat Ekle
+                    </button>
+                  </div>
+                </div>
+              ))}
+              {(availabilityList || []).length === 0 && (
+                <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-slate-200">
+                  <Clock className="w-16 h-16 text-slate-200 mx-auto mb-4" />
+                  <p className="text-slate-500">Henüz çalışma günü eklenmemiş.</p>
+                </div>
+              )}
             </div>
           </div>
         )}

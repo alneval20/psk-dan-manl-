@@ -56,6 +56,12 @@ service cloud.firestore {
              data.consultantTitle is string;
     }
 
+    function isValidAvailability(data) {
+      return data.keys().hasAll(['date', 'slots']) &&
+             data.date is string && data.date.size() == 10 &&
+             data.slots is list;
+    }
+
     // Rules
     
     match /services/{serviceId} {
@@ -71,6 +77,11 @@ service cloud.firestore {
     match /appointments/{appointmentId} {
       allow create: if request.resource.data.keys().hasAll(['name', 'email', 'phone', 'service', 'status', 'createdAt']);
       allow read, update, delete: if isAdmin();
+    }
+
+    match /availability/{availabilityId} {
+      allow read: if true;
+      allow write: if isAdmin() && isValidAvailability(request.resource.data);
     }
 
     match /{path=**} {

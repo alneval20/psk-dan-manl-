@@ -8,15 +8,17 @@ import { db } from '@/lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 const Contact = () => {
-  const { settings, t, language } = useData();
+  const { settings, t, language, availability } = useData();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
     service: t.common.defaultService,
     message: '',
-    preferredDate: ''
+    preferredDate: '',
+    preferredTime: ''
   });
+  const [selectedDateId, setSelectedDateId] = useState('');
   const [status, setStatus] = useState<{ type: 'success' | 'error', message: string } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -28,6 +30,7 @@ const Contact = () => {
     try {
       const appointmentData = {
         ...formData,
+        preferredDate: `${formData.preferredDate} ${formData.preferredTime}`,
         status: t.common.defaultStatus,
         language: language,
         createdAt: new Date().toISOString()
@@ -53,8 +56,10 @@ const Contact = () => {
         phone: '',
         service: t.common.defaultService,
         message: '',
-        preferredDate: ''
+        preferredDate: '',
+        preferredTime: ''
       });
+      setSelectedDateId('');
     } catch (error) {
       console.error("Form error:", error);
       setStatus({ type: 'error', message: t.contact.errorMessage });
@@ -193,15 +198,56 @@ const Contact = () => {
                   </select>
                 </div>
               </div>
-              <div>
+              <div className="space-y-4">
                 <label className="block text-sm font-bold text-slate-700 mb-2">{t.contact.formDate}</label>
-                <input 
-                  type="text" 
-                  value={formData.preferredDate}
-                  onChange={e => setFormData({...formData, preferredDate: e.target.value})}
-                  className="w-full px-5 py-4 bg-beige-50/50 border border-beige-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pistachio-500/20 focus:border-pistachio-500 transition-all" 
-                  placeholder={t.contact.formDatePlaceholder} 
-                />
+                
+                <div className="grid md:grid-cols-2 gap-4">
+                  {/* Date Selection */}
+                  <div>
+                    <select 
+                      value={selectedDateId}
+                      onChange={e => {
+                        const id = e.target.value;
+                        setSelectedDateId(id);
+                        const dateObj = availability.find(a => a.id === id);
+                        setFormData({
+                          ...formData, 
+                          preferredDate: dateObj ? dateObj.date : '',
+                          preferredTime: '' 
+                        });
+                      }}
+                      className="w-full px-5 py-4 bg-beige-50/50 border border-beige-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pistachio-500/20 focus:border-pistachio-500 transition-all"
+                    >
+                      <option value="">{t.contact.selectDate || 'Tarih Seçiniz'}</option>
+                      {(availability || []).filter(a => a.slots && a.slots.length > 0).map(a => (
+                        <option key={a.id} value={a.id}>
+                          {new Date(a.date).toLocaleDateString(language === 'tr' ? 'tr-TR' : 'en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Time Selection */}
+                  <div>
+                    <select 
+                      disabled={!selectedDateId}
+                      value={formData.preferredTime}
+                      onChange={e => setFormData({...formData, preferredTime: e.target.value})}
+                      className="w-full px-5 py-4 bg-beige-50/50 border border-beige-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pistachio-500/20 focus:border-pistachio-500 transition-all disabled:opacity-50"
+                    >
+                      <option value="">{t.contact.selectTime || 'Saat Seçiniz'}</option>
+                      {selectedDateId && availability.find(a => a.id === selectedDateId)?.slots?.map(slot => (
+                        <option key={slot} value={slot}>{slot}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                
+                {!selectedDateId && (availability || []).length === 0 && (
+                  <p className="text-xs text-slate-400 italic">
+                    {t.contact.noAvailableSlots || 'Bu tarih için uygun saat bulunmamaktadır.'}
+                  </p>
+                )}
               </div>
               <div>
                 <label className="block text-sm font-bold text-slate-700 mb-2">{t.contact.formMessage}</label>

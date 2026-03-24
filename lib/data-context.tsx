@@ -31,9 +31,16 @@ interface Service {
   order: number;
 }
 
+export interface Availability {
+  id: string;
+  date: string;
+  slots: string[];
+}
+
 interface DataContextType {
   settings: SiteSettings | null;
   services: Service[];
+  availability: Availability[];
   user: User | null;
   isAdmin: boolean;
   loading: boolean;
@@ -45,6 +52,7 @@ interface DataContextType {
 const DataContext = createContext<DataContextType>({
   settings: null,
   services: [],
+  availability: [],
   user: null,
   isAdmin: false,
   loading: true,
@@ -56,6 +64,7 @@ const DataContext = createContext<DataContextType>({
 export const DataProvider = ({ children }: { children: React.ReactNode }) => {
   const [settings, setSettings] = useState<SiteSettings | null>(null);
   const [services, setServices] = useState<Service[]>([]);
+  const [availability, setAvailability] = useState<Availability[]>([]);
   const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -137,21 +146,33 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
       } else {
         setServices(servicesData);
       }
-      setLoading(false);
     }, (error) => {
       console.error("Services fetch error:", error);
+    });
+
+    const availabilityQuery = query(collection(db, 'availability'), orderBy('date', 'asc'));
+    const unsubAvailability = onSnapshot(availabilityQuery, (snapshot) => {
+      const availabilityData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as Availability[];
+      setAvailability(availabilityData);
+      setLoading(false);
+    }, (error) => {
+      console.error("Availability fetch error:", error);
       setLoading(false);
     });
 
     return () => {
       unsubSettings();
       unsubServices();
+      unsubAvailability();
       unsubAuth();
     };
   }, []);
 
   return (
-    <DataContext.Provider value={{ settings, services, user, isAdmin, loading, language, setLanguage, t }}>
+    <DataContext.Provider value={{ settings, services, availability, user, isAdmin, loading, language, setLanguage, t }}>
       {children}
     </DataContext.Provider>
   );

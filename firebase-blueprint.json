@@ -67,6 +67,20 @@
         "createdAt": { "type": "string", "format": "date-time" }
       },
       "required": ["name", "email", "phone", "service", "status", "createdAt"]
+    },
+    "Availability": {
+      "title": "Availability",
+      "description": "Available time slots for a specific date.",
+      "type": "object",
+      "properties": {
+        "date": { "type": "string", "description": "Date in YYYY-MM-DD format." },
+        "slots": { 
+          "type": "array", 
+          "items": { "type": "string" },
+          "description": "List of available time slots (e.g., ['09:00', '10:00'])."
+        }
+      },
+      "required": ["date", "slots"]
     }
   },
   "firestore": {
@@ -81,6 +95,10 @@
     "appointments": {
       "schema": "Appointment",
       "description": "Collection of appointment requests."
+    },
+    "availability": {
+      "schema": "Availability",
+      "description": "Collection of available time slots for appointments."
     }
   }
 }
