@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Menu, X, ChevronDown, Instagram } from 'lucide-react';
+import { Menu, X, ChevronDown, Instagram, User as UserIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useData } from '@/lib/data-context';
 
@@ -10,7 +10,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const { settings } = useData();
+  const { settings, isAdmin } = useData();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -87,6 +87,15 @@ const Navbar = () => {
             >
               <Instagram className="w-5 h-5" />
             </a>
+            {isAdmin && (
+              <Link
+                href="/admin"
+                className="p-2 bg-pistachio-600 text-white rounded-full hover:bg-pistachio-700 transition-colors shadow-md"
+                title="Admin Paneli"
+              >
+                <UserIcon className="w-5 h-5" />
+              </Link>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -144,6 +153,18 @@ const Navbar = () => {
                   <span>Instagram&apos;da Takip Et</span>
                 </a>
               </div>
+              {isAdmin && (
+                <div className="pt-4 flex justify-center border-t border-slate-100 mt-4">
+                  <Link
+                    href="/admin"
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center space-x-2 text-pistachio-600 font-bold"
+                  >
+                    <UserIcon className="w-5 h-5" />
+                    <span>Admin Paneli</span>
+                  </Link>
+                </div>
+              )}
             </div>
           </motion.div>
         )}

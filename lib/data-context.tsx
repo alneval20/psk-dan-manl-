@@ -1,8 +1,9 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { db } from './firebase';
+import { auth, db } from './firebase';
 import { doc, onSnapshot, collection, query, orderBy, getDocFromServer } from 'firebase/firestore';
+import { onAuthStateChanged, User } from 'firebase/auth';
 
 interface SiteSettings {
   heroTitle: string;
@@ -26,21 +27,32 @@ interface Service {
 interface DataContextType {
   settings: SiteSettings | null;
   services: Service[];
+  user: User | null;
+  isAdmin: boolean;
   loading: boolean;
 }
 
 const DataContext = createContext<DataContextType>({
   settings: null,
   services: [],
+  user: null,
+  isAdmin: false,
   loading: true,
 });
 
 export const DataProvider = ({ children }: { children: React.ReactNode }) => {
   const [settings, setSettings] = useState<SiteSettings | null>(null);
   const [services, setServices] = useState<Service[]>([]);
+  const [user, setUser] = useState<User | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const unsubAuth = onAuthStateChanged(auth, (u) => {
+      setUser(u);
+      setIsAdmin(u?.email === "alneval20@gmail.com");
+    });
+
     // Test connection
     const testConnection = async () => {
       try {
@@ -62,7 +74,7 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
           heroTitle: "Ruh Sağlığınız İçin Güvenli Bir Alan",
           heroSubtitle: "Bilimsel temelli psikolojik yöntemler ve danışan odaklı yaklaşımımızla, ruh sağlığınızı destekliyoruz. Güvenli, empatik ve profesyonel danışmanlık süreçlerimizle kendinizi keşfetme ve iyileşme yolculuğunuzda yanınızdayız.",
           aboutText: "Girne Amerikan Üniversitesi Psikolojik Danışmanlık ve Rehberlik mezunu Meleknur Budak olarak, çocuk, ergen ve yetişkinlere yönelik profesyonel destek sunuyorum.",
-          aboutImage: "https://picsum.photos/seed/psychology/800/600",
+          aboutImage: "https://i.pinimg.com/736x/58/72/16/5872160891de431f8dd12947ef97c88f.jpg",
           email: "meleknurbudak4@gmail.com",
           instagram: "psk.dan.meleknurbudak",
           consultantName: "Meleknur Budak",
@@ -100,11 +112,12 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
     return () => {
       unsubSettings();
       unsubServices();
+      unsubAuth();
     };
   }, []);
 
   return (
-    <DataContext.Provider value={{ settings, services, loading }}>
+    <DataContext.Provider value={{ settings, services, user, isAdmin, loading }}>
       {children}
     </DataContext.Provider>
   );

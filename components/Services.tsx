@@ -24,7 +24,7 @@ const serviceDetails: Record<string, { details: string[], image: string }> = {
       'Aile İçi İletişim Çatışmaları',
       'Teknoloji ve Sosyal Medya Kullanımı'
     ],
-    image: 'https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?auto=format&fit=crop&q=80&w=800'
+    image: 'https://canakkalepsikolog.com.tr/assets/canakkale-ergen-danismanligi-BKNq8MHQ.jpg'
   },
   'Yetişkin Danışmanlığı': {
     details: [
@@ -34,7 +34,7 @@ const serviceDetails: Record<string, { details: string[], image: string }> = {
       'Stres ve Öfke Yönetimi',
       'Kayıp ve Yas Süreçleri'
     ],
-    image: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&q=80&w=800'
+    image: 'https://images.pexels.com/photos/10029741/pexels-photo-10029741.jpeg'
   },
   'Online Bireysel Danışmanlık': {
     details: [

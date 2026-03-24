@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
-import About from '@/components/About';
 import Services from '@/components/Services';
 import VisionApproach from '@/components/VisionApproach';
 import Contact from '@/components/Contact';
@@ -31,13 +30,7 @@ export default function Home() {
       <main className="min-h-screen">
         {showAdmin ? (
           <div className="fixed inset-0 z-[100] bg-white overflow-auto">
-            <button 
-              onClick={() => setShowAdmin(false)}
-              className="fixed top-4 right-4 z-[110] px-4 py-2 bg-pistachio-600 text-white rounded-lg shadow-lg hover:bg-pistachio-700 transition-colors"
-            >
-              Siteye Dön
-            </button>
-            <AdminPanel />
+            <AdminPanel onClose={() => setShowAdmin(false)} />
           </div>
         ) : (
           <>

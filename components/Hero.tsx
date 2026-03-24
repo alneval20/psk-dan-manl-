@@ -85,32 +85,69 @@ const Hero = () => {
             transition={{ duration: 1, delay: 0.2 }}
             className="relative"
           >
-            <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-[4/5]">
+            {/* Animated Floating Shapes */}
+            <motion.div
+              animate={{
+                y: [0, -20, 0],
+                rotate: [0, 5, 0],
+              }}
+              transition={{
+                duration: 5,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+              className="absolute -top-10 -right-10 w-32 h-32 bg-pistachio-200/40 rounded-full blur-2xl z-0"
+            />
+            <motion.div
+              animate={{
+                x: [0, 20, 0],
+                y: [0, 10, 0],
+              }}
+              transition={{
+                duration: 7,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+              className="absolute -bottom-10 -left-10 w-40 h-40 bg-blue-100/40 rounded-full blur-3xl z-0"
+            />
+
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-video lg:aspect-[1.4/1]">
               <Image
-                src={settings?.aboutImage || "https://picsum.photos/seed/psychology/800/1000"}
-                alt="Meleknur Budak"
+                src={settings?.aboutImage || "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&q=80&w=1200"}
+                alt="Huzurlu Terapi Alanı"
                 fill
                 className="object-cover"
                 referrerPolicy="no-referrer"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/20 to-transparent" />
+              
+              {/* Overlay Pattern */}
+              <div className="absolute inset-0 opacity-10 pointer-events-none" 
+                style={{ backgroundImage: 'radial-gradient(circle, #000 1px, transparent 1px)', backgroundSize: '20px 20px' }} 
+              />
             </div>
+
             {/* Decorative Card */}
             <motion.div 
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 1, duration: 0.5 }}
-              className="absolute -bottom-6 -left-6 bg-white p-6 rounded-2xl shadow-xl border border-beige-200 hidden md:block"
+              className="absolute -bottom-6 -right-6 bg-white/90 backdrop-blur-md p-6 rounded-2xl shadow-xl border border-white/50 hidden md:block z-20"
             >
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-pistachio-100 rounded-full flex items-center justify-center text-pistachio-600">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
+                  <motion.div
+                    animate={{ scale: [1, 1.1, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                  </motion.div>
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-slate-900">Güvenli Alan</p>
-                  <p className="text-xs text-slate-500">Gizlilik ve Empati</p>
+                  <p className="text-sm font-bold text-slate-900">İçsel Huzur</p>
+                  <p className="text-xs text-slate-500">Sizin İçin Buradayız</p>
                 </div>
               </div>
             </motion.div>

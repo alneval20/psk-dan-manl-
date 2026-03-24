@@ -21,6 +21,7 @@ import {
   orderBy
 } from 'firebase/firestore';
 import { useData } from '@/lib/data-context';
+import { useRouter, usePathname } from 'next/navigation';
 import { 
   Save, 
   Plus, 
@@ -37,14 +38,19 @@ import {
   Phone as PhoneIcon,
   Clock,
   ChevronRight,
-  Eye
+  Eye,
+  ArrowLeft
 } from 'lucide-react';
 
-const AdminPanel = () => {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+interface AdminPanelProps {
+  onClose?: () => void;
+}
+
+const AdminPanel = ({ onClose }: AdminPanelProps) => {
+  const { user, isAdmin, loading: dataLoading, settings: currentSettings, services: currentServices } = useData();
+  const router = useRouter();
+  const pathname = usePathname();
   const [activeTab, setActiveTab] = useState<'settings' | 'services' | 'appointments'>('settings');
-  const { settings: currentSettings, services: currentServices } = useData();
   
   const [appointments, setAppointments] = useState<any[]>([]);
   const [selectedAppointment, setSelectedAppointment] = useState<any | null>(null);
@@ -75,21 +81,13 @@ const AdminPanel = () => {
   };
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (u) => {
-      setUser(u);
-      setLoading(false);
-    });
-    return unsub;
-  }, []);
-
-  useEffect(() => {
     const loadAppointments = async () => {
-      if (user && user.email === "alneval20@gmail.com") {
+      if (isAdmin) {
         await fetchAppointments();
       }
     };
     loadAppointments();
-  }, [user]);
+  }, [isAdmin]);
 
   const handleUpdateAppointmentStatus = async (id: string, newStatus: string) => {
     try {
@@ -186,7 +184,7 @@ const AdminPanel = () => {
     }
   };
 
-  if (loading) return <div className="flex items-center justify-center h-screen">Yükleniyor...</div>;
+  if (dataLoading) return <div className="flex items-center justify-center h-screen">Yükleniyor...</div>;
 
   if (!user) {
     return (
@@ -206,14 +204,22 @@ const AdminPanel = () => {
   }
 
   // Check if user is the admin email
-  if (user.email !== "alneval20@gmail.com") {
+  if (!isAdmin) {
     return (
       <div className="flex flex-col items-center justify-center h-screen bg-beige-50 p-4">
         <div className="bg-white p-10 rounded-3xl shadow-xl max-w-md w-full text-center">
           <AlertCircle className="w-16 h-16 text-rose-500 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-slate-900 mb-2">Yetkisiz Erişim</h2>
           <p className="text-slate-600 mb-6">Bu bölüme erişim yetkiniz bulunmamaktadır.</p>
-          <button onClick={() => signOut(auth)} className="text-pistachio-600 font-bold">Çıkış Yap</button>
+          <button 
+            onClick={() => {
+              signOut(auth);
+              if (pathname === '/admin') router.push('/');
+            }} 
+            className="text-pistachio-600 font-bold"
+          >
+            Çıkış Yap
+          </button>
         </div>
       </div>
     );
@@ -251,9 +257,22 @@ const AdminPanel = () => {
 
         <button 
           onClick={() => signOut(auth)}
-          className="mt-auto flex items-center gap-3 px-4 py-3 text-rose-600 hover:bg-rose-50 rounded-xl transition-all"
+          className="mt-auto flex items-center gap-3 px-4 py-3 text-rose-600 hover:bg-rose-50 rounded-xl transition-all mb-2"
         >
           <LogOut className="w-5 h-5" /> Çıkış Yap
+        </button>
+
+        <button 
+          onClick={() => {
+            if (onClose) {
+              onClose();
+            } else {
+              router.push('/');
+            }
+          }}
+          className="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-beige-50 rounded-xl transition-all"
+        >
+          <ArrowLeft className="w-5 h-5" /> Siteye Dön
         </button>
       </div>
 
